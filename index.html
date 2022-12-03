@@ -1,0 +1,103 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <title>Weather Forecast</title>
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css" />
+    <link rel="stylesheet" href="style.css" />
+</head>
+
+<body class='container'>
+    <header class='jumbotron '>
+        <h1>Weather Forecast</h1>
+    </header>
+    <div class="row">
+
+        <div class="container-fluid col-sm-4">
+            <div id='city-search' style= 'padding:5px' class='container'>
+                <form id="city-form" class="form-group ">
+                    <div class = 'container col'>
+                        <label>Search for a City:</label>
+                        <input class="form-control " style="min-width:10rem;" type="text" id="city-input" />
+                        <button id ='search-button' class="btn btn-secondary btn-sm" type="submit">Search</button>
+                    </div>
+                </form>
+            </div>
+            <div id='city-history' class='list-group' id="cities-container">
+                <h2 id="cities-searched-title">Cities Searched</h2>
+                <ul id="cities-searched-list" class="list-group">Destintion Cities
+                    <li class="list-group-item">Cras justo odio</li>
+                    <li class="list-group-item">Dapibus ac facilisis in</li>
+                    <li class="list-group-item">Morbi leo risus</li>
+                    <li class="list-group-item">Porta ac consectetur ac</li>
+                    <li class="list-group-item">Vestibulum at eros</li>
+                </ul>
+            </div>
+        </div>
+        <div class="container-fluid col-sm-8">
+            <div id='city-card' class="card">
+                <div class="card-body">
+                    <h2 id= 'selected-city' class="card-title">Selected City</h2>
+                    <img src="https://openweathermap.org/img/wn" alt="image of current weather" id="city-weather-image"/>
+                    <p id="temperature">Temperature: </p>
+                    <p id="wind">Wind: </p>
+                    <p id="humidity">Humidity: </p>
+                </div>
+            </div>
+
+
+            <div class="container col" id="five-day-forecast-container">
+                <h2 id="five-day-forecast">5 Day Forecast</h2>
+                <div class="row">
+                    <div class="card text-white bg-dark mb-3" style="margin: 5px;" id="day-1">
+                        <h3 id="tomorrow-forecast-date"></h3>
+                        <img src="https://openweathermap.org/img/wn/" alt="image of current weather"
+                            id="day-1-weather-image" />
+                        <p id="tomorrow-temperature">Temperature: </p>
+                        <p id="tomorrow-wind">Wind: </p>
+                        <p id="tomorrow-humidity">Humidity: </p>
+                    </div>
+                    <div class="card text-white bg-dark mb-3" style="margin: 5px;" id="day-2">
+                        <h3 id="day-2-forecast-date"></h3>
+                        <img src="https://openweathermap.org/img/wn/" alt="image of current weather"
+                            id="day-2-weather-image" />
+                        <p id="day-2-temperature">Temperature: </p>
+                        <p id="day-2-wind">Wind: </p>
+                        <p id="day-2-humidity">Humidity: </p>
+                    </div>
+                    <div class="card text-white bg-dark mb-3" style="margin: 5px;" id="day-3">
+                        <h3 id="day-3-forecast-date"></h3>
+                        <img src="https://openweathermap.org/img/wn/" alt="image of current weather"
+                            id="day-3-weather-image" />
+                        <p id="day-3-temperature">Temperature: </p>
+                        <p id="day-3-wind">Wind: </p>
+                        <p id="day-3-humidity">Humidity: </p>
+                    </div>
+                    <div class="card text-white bg-dark mb-3" style=" margin: 5px;" id="day-4">
+                        <h3 id="day-4-forecast-date"></h3>
+                        <img src="https://openweathermap.org/img/wn/" alt="image of current weather"
+                            id="day-4-weather-image" />
+                        <p id="day-4-temperature">Temperature: </p>
+                        <p id="day-4-wind">Wind: </p>
+                        <p id="day-4-humidity">Humidity: </p>
+                    </div>
+                    <div class="card text-white bg-dark mb-3" style=" margin: 5px;" id="day-5">
+                        <h3 id="day-5-forecast-date"></h3>
+                        <img src="https://openweathermap.org/img/wn/" alt="image of current weather"
+                            id="day-5-weather-image" />
+                        <p id="day-5-temperature">Temperature: </p>
+                        <p id="day-5-wind">Wind: </p>
+                        <p id="day-5-humidity">Humidity: </p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/moment.js/2.24.0/moment.min.js"></script>
+<script src="script.js"></script>
+</body>
+
+</html>
