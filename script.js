@@ -159,6 +159,7 @@ function performSearch(search){
             day5Humidity.innerHTML = 'Humidity: ' + data.list[4].main.humidity + " %";
           })
       }
+      performSearch();
       searchButton.addEventListener("click", performSearch); 
 
 
