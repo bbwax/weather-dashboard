@@ -1,7 +1,7 @@
 const searchButton = document.getElementById('search-button');
 const cityInput = document.getElementById("city-input");
 const citiesSearchedUl = document.getElementById('cities-searched-list');
-
+const listEL = document.getElementsByClassName('list-group-item');
 
 // const apiKey = "c10eaea0e9394fba311e9c86f1534c7b";
 // const latLonUrl = `http://api.openweathermap.org/geo/1.0/direct?limit=10&appid=${apiKey}`
@@ -45,6 +45,7 @@ function updateCities() {
             citiesSearchedUl.insertBefore(li, citiesSearchedUl.children[0]);
         })
     }
+    setupListItems();
 }
 updateCities();
 
@@ -91,8 +92,8 @@ const day4WeatherImage = document.getElementById('day-4-weather-image');
 const day5WeatherImage = document.getElementById('day-5-weather-image');
 
 //perform api search to get lat and lon and then weather + 5 day forecast
-function performSearch() {
-    let destinationCityName = document.getElementById('city-input').value;
+function performSearch(search) {
+    let destinationCityName = search || document.getElementById('city-input').value;
     cityDisplay.innerHTML = destinationCityName + " " + now;
     const baseUrl = "https://api.openweathermap.org/geo/1.0/direct?";
     let parameters = "limit=1&appid=e2012a2fb3072bdca3b7b087af198107&q=" + encodeURIComponent(destinationCityName);
@@ -105,9 +106,9 @@ function performSearch() {
         .then(function (response) {
             return response.json();
         })
-        .then(function (data) {
-            lat = data[0].lat;
-            lon = data[0].lon;
+        .then(function (geo_coordinates) {
+            lat = geo_coordinates[0].lat;
+            lon = geo_coordinates[0].lon;
             const baseWeatherURL = "https://api.openweathermap.org/data/2.5/weather?&appid=e2012a2fb3072bdca3b7b087af198107&units=imperial&lang=en"
             weatherParameters = "&lat=" + encodeURIComponent(lat) + "&lon=" + encodeURIComponent(lon);
             console.log(lat);
@@ -118,57 +119,72 @@ function performSearch() {
         .then(function (response) {
             return response.json();
         })
-        .then(function (data) {
-            cityWeatherImg.src = "https://openweathermap.org/img/wn/" + data.weather[0].icon + '.png';
-            cityWeatherImg.alt = data.weather[0].description;
-            temperature.innerHTML = 'Temperature: ' + data.main.temp + " F";
-            wind.innerHTML = 'Wind: ' + data.wind.speed + " MPH";
-            humidity.innerHTML = 'Humidity: ' + data.main.humidity + " %";
-            const forecastBaseURL = "https://api.openweathermap.org/data/2.5/forecast?units=imperial&appid=e2012a2fb3072bdca3b7b087af198107&lang=en";
+        .then(function (weather_data) {
+            cityWeatherImg.src = "https://openweathermap.org/img/wn/" + weather_data.weather[0].icon + '.png';
+            cityWeatherImg.alt = weather_data.weather[0].description;
+            temperature.innerHTML = 'Temperature: ' + weather_data.main.temp + " F";
+            wind.innerHTML = 'Wind: ' + weather_data.wind.speed + " MPH";
+            humidity.innerHTML = 'Humidity: ' + weather_data.main.humidity + " %";
+            const forecastBaseURL = "https://api.openweathermap.org/data/2.5/forecast?units=imperial&appid=e2012a2fb3072bdca3b7b087af198107&lang=en&cnt=100";
             const forecastFullURL = forecastBaseURL + weatherParameters;
             return fetch(forecastFullURL);
         })
         .then(function (response) {
-            // console.log(response.json());
             return response.json();
-            
+
         })
+
         .then(function (data) {
-            //console.log(response.json());
-            tomorrowForecastDate.innerHTML =  moment().add(1, 'days').format('MMM DD, YYYY')
+            console.log(data);
+            tomorrowForecastDate.innerHTML = moment().add(1, 'days').format('MMM DD, YYYY')
             day1WeatherImage.src = "https://openweathermap.org/img/wn/" + data.list[0].weather[0].icon + '.png';
             day1WeatherImage.alt = data.list[0].weather[0].description;
-            tomorrowTemperature.innerHTML = 'Temperature: ' + data.list[0].main.temp + " F";
+            tomorrowTemperature.innerHTML = 'Temperature: ' + data.list[0].main.temp_max + " F";
             tomorowWind.innerHTML = 'Wind: ' + data.list[0].wind.speed + " MPH";
             tomorrowHumidity.innerHTML = 'Humidity: ' + data.list[0].main.humidity + " %";
             day2ForecastDate.innerHTML = moment().add(2, 'days').format('MMM DD, YYYY')
             day2WeatherImage.src = "https://openweathermap.org/img/wn/" + data.list[1].weather[0].icon + '.png';
             day2WeatherImage.alt = data.list[0].weather[0].description;
-            day2Temperature.innerHTML = 'Temperature: ' + data.list[1].main.temp + " F";
+            day2Temperature.innerHTML = 'Temperature: ' + data.list[10].main.temp_max + " F";
             day2Wind.innerHTML = 'Wind: ' + data.list[1].wind.speed + " MPH";
             day2Humidity.innerHTML = 'Humidity: ' + data.list[1].main.humidity + " %";
             day3ForecastDate.innerHTML = moment().add(3, 'days').format('MMM DD, YYYY')
             day3WeatherImage.src = "https://openweathermap.org/img/wn/" + data.list[2].weather[0].icon + '.png';
             day3WeatherImage.alt = data.list[0].weather[0].description;
-            day3Temperature.innerHTML = 'Temperature: ' + data.list[2].main.temp + " F";
+            day3Temperature.innerHTML = 'Temperature: ' + data.list[18].main.temp_max + " F";
             day3Wind.innerHTML = 'Wind: ' + data.list[2].wind.speed + " MPH";
             day3Humidity.innerHTML = 'Humidity: ' + data.list[2].main.humidity + " %";
             day4ForecastDate.innerHTML = moment().add(4, 'days').format('MMM DD, YYYY')
             day4WeatherImage.src = "https://openweathermap.org/img/wn/" + data.list[3].weather[0].icon + '.png';
             day4WeatherImage.alt = data.list[0].weather[0].description;
-            day4Temperature.innerHTML = 'Temperature: ' + data.list[3].main.temp + " F";
+            day4Temperature.innerHTML = 'Temperature: ' + data.list[26].main.temp_max + " F";
             day4Wind.innerHTML = 'Wind: ' + data.list[3].wind.speed + " MPH";
             day4Humidity.innerHTML = 'Humidity: ' + data.list[3].main.humidity + " %";
-            day5ForecastDate.innerHTML =moment().add(5, 'days').format('MMM DD, YYYY')
+            day5ForecastDate.innerHTML = moment().add(5, 'days').format('MMM DD, YYYY')
             day5WeatherImage.src = "https://openweathermap.org/img/wn/" + data.list[4].weather[0].icon + '.png';
             day5WeatherImage.alt = data.list[0].weather[0].description;
-            day5Temperature.innerHTML = 'Temperature: ' + data.list[4].main.temp + " F";
+            day5Temperature.innerHTML = 'Temperature: ' + data.list[34].main.temp_max + " F";
             day5Wind.innerHTML = 'Wind: ' + data.list[4].wind.speed + " MPH";
             day5Humidity.innerHTML = 'Humidity: ' + data.list[4].main.humidity + " %";
         })
 }
-searchButton.addEventListener("click", performSearch);
+searchButton.addEventListener("click", (e)=> performSearch());
 
+function handleClick(e) {
+    destinationCityName = e.target.textContent;
+    performSearch(destinationCityName);
+    console.log(destinationCityName);
+};
+
+function setupListItems (){
+    console.log("setup")
+    const items = document.getElementsByClassName('list-group-item');
+    console.log("listEl",items);
+    for (i = 0; i < items.length; i++) {
+        items[i].addEventListener('click', handleClick);
+    };
+}
+setupListItems();
 
 
 //     event.preventDefault();
