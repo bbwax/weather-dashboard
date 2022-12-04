@@ -14,8 +14,8 @@ const citiesSearchedUl = document.getElementById('cities-searched-list');
 
 // save search to local storage
 const saveCitySearch = () => {
-    // event.preventDefault();
-   
+    event.preventDefault();
+
     const name = cityInput.value;
     if (!name) {
         return;
@@ -27,37 +27,39 @@ const saveCitySearch = () => {
         localStorage.setItem('cities', JSON.stringify(savedNames));
     } else {
         const savedNames = [name];
-        localStorage.setItem('cities', JSON.stringify(savedNames));    
+        localStorage.setItem('cities', JSON.stringify(savedNames));
     }
+    updateCities();
 }
 // update searched city list
 function updateCities() {
     citiesSearchedUl.innerHTML = '';
     const savedCities = localStorage.getItem('cities');
     if (savedCities) {
-      const names = JSON.parse(savedCities);
-      names.forEach(name => {
-        const li = document.createElement('li');
-        li.textContent = name;
-        li.classList.add("list-group-item") ;
-        citiesSearchedUl.appendChild(li);
-        citiesSearchedUl.insertBefore(li, citiesSearchedUl.children[0]);
-      })
+        const names = JSON.parse(savedCities);
+        names.forEach(name => {
+            const li = document.createElement('li');
+            li.textContent = name;
+            li.classList.add("list-group-item");
+            citiesSearchedUl.appendChild(li);
+            citiesSearchedUl.insertBefore(li, citiesSearchedUl.children[0]);
+        })
     }
-  }
-  updateCities();
+}
+updateCities();
 
 
 
-searchButton.addEventListener("click", saveCitySearch); 
+searchButton.addEventListener("click", saveCitySearch);
 
 
 
 //set date and grabs the variables need for the weather values
-const selectedCity = document.getElementById('selected-city');
+const selectedCity = document.getElementById('city-input');
+const cityDisplay = document.getElementById('selected-city');
 let destinationCityName = cityInput.value;
-const now =moment().format('MMM DD, YYYY');
-selectedCity.innerHTML = destinationCityName + " " + now;
+const now = moment().format('MMM DD, YYYY');
+cityDisplay.innerHTML = destinationCityName + " " + now;
 const temperature = document.getElementById('temperature');
 const wind = document.getElementById('wind');
 const humidity = document.getElementById('humidity');
@@ -89,14 +91,17 @@ const day4WeatherImage = document.getElementById('day-4-weather-image');
 const day5WeatherImage = document.getElementById('day-5-weather-image');
 
 //perform api search to get lat and lon and then weather + 5 day forecast
-function performSearch(search){
-    const baseUrl = "https://api.openweathermap.org/geo/1.0/direct?"
+function performSearch() {
+    let destinationCityName = document.getElementById('city-input').value;
+    cityDisplay.innerHTML = destinationCityName + " " + now;
+    const baseUrl = "https://api.openweathermap.org/geo/1.0/direct?";
     let parameters = "limit=1&appid=e2012a2fb3072bdca3b7b087af198107&q=" + encodeURIComponent(destinationCityName);
     const fullURL = baseUrl + parameters;
     let lat;
     let lon;
     let weatherParameters;
-    fetch (fullURL)
+    console.log(fullURL);
+    fetch(fullURL)
         .then(function (response) {
             return response.json();
         })
@@ -109,11 +114,11 @@ function performSearch(search){
             console.log(lon);
             const fullWeatherURL = baseWeatherURL + weatherParameters;
             return fetch(fullWeatherURL);
-          })
-          .then(function (response) {
+        })
+        .then(function (response) {
             return response.json();
-          })
-          .then(function (data) {
+        })
+        .then(function (data) {
             cityWeatherImg.src = "https://openweathermap.org/img/wn/" + data.weather[0].icon + '.png';
             cityWeatherImg.alt = data.weather[0].description;
             temperature.innerHTML = 'Temperature: ' + data.main.temp + " F";
@@ -122,45 +127,47 @@ function performSearch(search){
             const forecastBaseURL = "https://api.openweathermap.org/data/2.5/forecast?units=imperial&appid=e2012a2fb3072bdca3b7b087af198107&lang=en";
             const forecastFullURL = forecastBaseURL + weatherParameters;
             return fetch(forecastFullURL);
-          })
-          .then(function (response) {
+        })
+        .then(function (response) {
+            // console.log(response.json());
             return response.json();
-          })
-          .then(function (data) {
-            tomorrowForecastDate.innerHTML = luxon.DateTime.now().plus({ days: 1 }).setZone('America/Los_Angeles').toLocaleString();
+            
+        })
+        .then(function (data) {
+            //console.log(response.json());
+            tomorrowForecastDate.innerHTML =  moment().add(1, 'days').format('MMM DD, YYYY')
             day1WeatherImage.src = "https://openweathermap.org/img/wn/" + data.list[0].weather[0].icon + '.png';
             day1WeatherImage.alt = data.list[0].weather[0].description;
             tomorrowTemperature.innerHTML = 'Temperature: ' + data.list[0].main.temp + " F";
             tomorowWind.innerHTML = 'Wind: ' + data.list[0].wind.speed + " MPH";
             tomorrowHumidity.innerHTML = 'Humidity: ' + data.list[0].main.humidity + " %";
-            day2ForecastDate.innerHTML = luxon.DateTime.now().plus({ days: 2 }).setZone('America/Los_Angeles').toLocaleString();
+            day2ForecastDate.innerHTML = moment().add(2, 'days').format('MMM DD, YYYY')
             day2WeatherImage.src = "https://openweathermap.org/img/wn/" + data.list[1].weather[0].icon + '.png';
             day2WeatherImage.alt = data.list[0].weather[0].description;
             day2Temperature.innerHTML = 'Temperature: ' + data.list[1].main.temp + " F";
             day2Wind.innerHTML = 'Wind: ' + data.list[1].wind.speed + " MPH";
             day2Humidity.innerHTML = 'Humidity: ' + data.list[1].main.humidity + " %";
-            day3ForecastDate.innerHTML = luxon.DateTime.now().plus({ days: 3 }).setZone('America/Los_Angeles').toLocaleString();
+            day3ForecastDate.innerHTML = moment().add(3, 'days').format('MMM DD, YYYY')
             day3WeatherImage.src = "https://openweathermap.org/img/wn/" + data.list[2].weather[0].icon + '.png';
             day3WeatherImage.alt = data.list[0].weather[0].description;
             day3Temperature.innerHTML = 'Temperature: ' + data.list[2].main.temp + " F";
             day3Wind.innerHTML = 'Wind: ' + data.list[2].wind.speed + " MPH";
             day3Humidity.innerHTML = 'Humidity: ' + data.list[2].main.humidity + " %";
-            day4ForecastDate.innerHTML = luxon.DateTime.now().plus({ days: 4 }).setZone('America/Los_Angeles').toLocaleString();
+            day4ForecastDate.innerHTML = moment().add(4, 'days').format('MMM DD, YYYY')
             day4WeatherImage.src = "https://openweathermap.org/img/wn/" + data.list[3].weather[0].icon + '.png';
             day4WeatherImage.alt = data.list[0].weather[0].description;
             day4Temperature.innerHTML = 'Temperature: ' + data.list[3].main.temp + " F";
             day4Wind.innerHTML = 'Wind: ' + data.list[3].wind.speed + " MPH";
             day4Humidity.innerHTML = 'Humidity: ' + data.list[3].main.humidity + " %";
-            day5ForecastDate.innerHTML = luxon.DateTime.now().plus({ days: 5 }).setZone('America/Los_Angeles').toLocaleString();
+            day5ForecastDate.innerHTML =moment().add(5, 'days').format('MMM DD, YYYY')
             day5WeatherImage.src = "https://openweathermap.org/img/wn/" + data.list[4].weather[0].icon + '.png';
             day5WeatherImage.alt = data.list[0].weather[0].description;
             day5Temperature.innerHTML = 'Temperature: ' + data.list[4].main.temp + " F";
             day5Wind.innerHTML = 'Wind: ' + data.list[4].wind.speed + " MPH";
             day5Humidity.innerHTML = 'Humidity: ' + data.list[4].main.humidity + " %";
-          })
-      }
-      performSearch();
-      searchButton.addEventListener("click", performSearch); 
+        })
+}
+searchButton.addEventListener("click", performSearch);
 
 
 
